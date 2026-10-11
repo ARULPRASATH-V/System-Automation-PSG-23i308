@@ -1,14 +1,25 @@
-import csv
-import random
-import os
+
+import ast
+import re
+import math
+from pathlib import Path
+
 import pandas as pd
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 
-CSV_FILE = "machine_sensor_data.csv"
-TOTAL_ROWS = 100
+
+# --------------------------------------------------
+# 1. FILE PATHS
+# --------------------------------------------------
+
+BASE_DIR = Path(__file__).resolve().parent
+
+LOG_FILE = BASE_DIR.parent / "Day1" / "day1_log.txt"
+CSV_FILE = BASE_DIR / "machine_sensor_data.csv"
+OUTPUT_FILE = BASE_DIR / "log_ml_comparison.csv"
 
 FEATURES = [
     "temperature",
@@ -18,155 +29,366 @@ FEATURES = [
     "current"
 ]
 
-TARGET = "state"
+ALLOWED_STATES = ["NORMAL", "WARNING", "UNSAFE"]
 
 
-def generate_sensor_data():
-    return {
-        "temperature": round(random.uniform(50, 80), 1),
-        "pressure": round(random.uniform(1.5, 3.5), 2),
-        "vibration": round(random.uniform(10, 30), 1),
-        "rpm": random.randint(1000, 1700),
-        "current": round(random.uniform(5, 12), 1)
-    }
+# --------------------------------------------------
+# 2. LOAD AND VALIDATE TRAINING DATA
+# --------------------------------------------------
 
+def load_training_data():
+    if not CSV_FILE.exists():
+        raise FileNotFoundError(
+            f"Training CSV not found: {CSV_FILE}"
+        )
 
-def determine_state(data):
-    if (
-        data["temperature"] > 110
-        or data["pressure"] > 8
-        or data["vibration"] > 90
-        or data["rpm"] > 2800
-        or data["current"] > 40
-    ):
-        return "UNSAFE"
-
-    if (
-        data["temperature"] > 85
-        or data["pressure"] > 4
-        or data["vibration"] > 40
-        or data["current"] > 15
-        or data["rpm"] > 2000
-        or data["rpm"] < 800
-    ):
-        return "WARNING"
-
-    return "NORMAL"
-
-
-def generate_csv():
-    with open(CSV_FILE, "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(FEATURES + [TARGET])
-
-        for _ in range(TOTAL_ROWS):
-            data = generate_sensor_data()
-            state = determine_state(data)
-
-            writer.writerow([
-                data["temperature"],
-                data["pressure"],
-                data["vibration"],
-                data["rpm"],
-                data["current"],
-                state
-            ])
-
-    print("Safe dataset generated successfully.")
-
-
-def load_dataset():
     df = pd.read_csv(CSV_FILE)
 
-    df = df[FEATURES + [TARGET]].copy()
+    required_columns = FEATURES + ["state"]
+
+    if not all(
+        column in df.columns for column in required_columns
+    ):
+        raise ValueError(
+            f"CSV must contain these columns: {required_columns}"
+        )
+
+    df = df[required_columns].copy()
 
     for column in FEATURES:
         df[column] = pd.to_numeric(
             df[column], errors="coerce"
         )
 
-    df[TARGET] = (
-        df[TARGET].astype("string").str.strip().str.upper()
+    df["state"] = (
+        df["state"]
+        .astype("string")
+        .str.strip()
+        .str.upper()
     )
 
-    df = df.dropna(subset=FEATURES + [TARGET])
+    df = df.dropna(subset=required_columns)
+
+    # Remove infinite sensor values.
+    finite_rows = df[FEATURES].apply(
+        lambda column: column.map(
+            lambda value: math.isfinite(float(value))
+        )
+    ).all(axis=1)
+
+    df = df[finite_rows]
+
+    # Keep only recognized states.
+    df = df[
+        df["state"].isin(ALLOWED_STATES)
+    ].copy()
 
     if len(df) < 5:
-        raise ValueError("Not enough valid training data.")
+        raise ValueError(
+            "At least 5 valid training rows are required."
+        )
+
+    if df["state"].nunique() < 2:
+        raise ValueError(
+            "Training data must contain at least 2 different states."
+        )
+
+    print("Training dataset shape:", df.shape)
+
+    print("\nTraining state distribution:")
+    print(df["state"].value_counts())
 
     return df
 
 
+# --------------------------------------------------
+# 3. TRAIN MACHINE-LEARNING MODELS
+# --------------------------------------------------
+
 def train_models(df):
     X = df[FEATURES]
-    y = df[TARGET]
+    y = df["state"]
 
     models = {
-        "Decision Tree": DecisionTreeClassifier(
+        "Decision_Tree": DecisionTreeClassifier(
+            max_depth=5,
             random_state=42
         ),
-        "Random Forest": RandomForestClassifier(
+
+        "Random_Forest": RandomForestClassifier(
             n_estimators=100,
+            max_depth=5,
             random_state=42
         ),
-        "Naive Bayes": GaussianNB()
+
+        "Naive_Bayes": GaussianNB()
     }
 
     for name, model in models.items():
         model.fit(X, y)
-        print(name, "model trained successfully.")
+
+        print(f"{name} trained successfully.")
 
     return models
 
 
-def predict_machine_state(models):
-    sample_data = {
-        "temperature": 65.0,
-        "pressure": 2.5,
-        "vibration": 20.0,
-        "rpm": 1400,
-        "current": 8.0
-    }
+# --------------------------------------------------
+# 4. CONVERT LOG THINK VALUE INTO MACHINE STATE
+# --------------------------------------------------
 
-    sample = pd.DataFrame([sample_data])
+def determine_logged_state(think):
+    if think == "NO_RULE_FIRED":
+        return "NORMAL"
 
+    if think in [
+        "EXCESSIVE_VIBRATION",
+        "HIGH_TEMP",
+        "HIGH_PRESSURE"
+    ]:
+        return "WARNING"
 
-    for key, value in sample_data.items():
-        print(f"{key.capitalize()}: {value}")
+    if think == "CRITICAL_OVERLOAD":
+        return "UNSAFE"
 
+    if think == "SENSOR_DROPOUT_DETECTED":
+        return "SENSOR_DROPOUT"
 
-    predictions = []
-
-    for name, model in models.items():
-        prediction = model.predict(sample)[0]
-        predictions.append(prediction)
-        print(f"{name}: {prediction}")
-
-    counts = pd.Series(predictions).value_counts()
-    majority_state = counts.index[0]
+    return "UNKNOWN"
 
 
-    if len(counts) > 1 and counts.iloc[0] == counts.iloc[1]:
-        print("Models disagree. Inspect the sensor readings.")
-    else:
-        print("Predicted Machine State:", majority_state)
+# --------------------------------------------------
+# 5. READ AND PARSE DAY1 LOG FILE
+# --------------------------------------------------
 
-        if majority_state == "NORMAL":
-            print("Machine is operating in the normal range.")
-        elif majority_state == "WARNING":
-            print("Warning: Inspect the machine.")
+def read_log_file(rpm_fallback):
+    if not LOG_FILE.exists():
+        raise FileNotFoundError(
+            f"Log file not found: {LOG_FILE}"
+        )
+
+    records = []
+
+    # Example:
+    # [2026-10-10 15:25:25] SENSE: {...}
+    # | THINK: NO_RULE_FIRED | ACT: CONTINUE_NORMAL
+
+    pattern = re.compile(
+        r"^\[(.*?)\]\s+SENSE:\s+(\{.*?\})"
+        r"\s+\|\s+THINK:\s+([A-Z_]+)"
+        r"\s+\|\s+ACT:\s+([A-Z_]+)\s*$"
+    )
+
+    with open(LOG_FILE, "r", encoding="utf-8") as file:
+        for line_number, line in enumerate(file, start=1):
+            match = pattern.search(line.strip())
+
+            if not match:
+                continue
+
+            timestamp, sensor_text, think, action = match.groups()
+
+            try:
+                sensors = ast.literal_eval(sensor_text)
+
+                if not isinstance(sensors, dict):
+                    raise ValueError(
+                        "Sensor data must be a dictionary."
+                    )
+
+            except (ValueError, SyntaxError):
+                print(
+                    f"Skipping invalid sensor data "
+                    f"on line {line_number}"
+                )
+                continue
+
+            record = {
+                "log_line": line_number,
+                "timestamp": timestamp,
+                "temperature": sensors.get("temperature"),
+                "pressure": sensors.get("pressure"),
+                "vibration": sensors.get("vibration"),
+                "current": sensors.get("current"),
+                "logged_think": think,
+                "logged_action": action
+            }
+
+            # Map the logged rule to a machine state.
+            logged_state = determine_logged_state(think)
+
+            record["logged_state"] = logged_state
+
+            # Handle missing or invalid sensor readings.
+            sensor_values = [
+                record["temperature"],
+                record["pressure"],
+                record["vibration"],
+                record["current"]
+            ]
+
+            sensor_dropout = any(
+                not isinstance(value, (int, float))
+                or not math.isfinite(float(value))
+                for value in sensor_values
+            )
+
+            if (
+                sensor_dropout
+                or logged_state == "SENSOR_DROPOUT"
+            ):
+                record["logged_state"] = "SENSOR_DROPOUT"
+                record["rpm_used"] = None
+                record["rpm_assumed"] = False
+
+                for name in [
+                    "Decision_Tree",
+                    "Random_Forest",
+                    "Naive_Bayes"
+                ]:
+                    record[name] = "NOT_PREDICTED"
+
+                record["ml_majority"] = "NOT_PREDICTED"
+                record["comparison"] = "SENSOR_DROPOUT"
+
+                records.append(record)
+                continue
+
+            # RPM is absent from the log.
+            record["rpm_used"] = rpm_fallback
+            record["rpm_assumed"] = True
+
+            records.append(record)
+
+    if not records:
+        raise ValueError(
+            "No valid log records found. Check the log format."
+        )
+
+    return records
+
+
+# --------------------------------------------------
+# 6. PREDICT AND COMPARE MODEL RESULTS
+# --------------------------------------------------
+
+def compare_predictions():
+    df = load_training_data()
+
+    models = train_models(df)
+
+    # The log has no RPM field, so use the dataset median.
+    rpm_fallback = float(df["rpm"].median())
+
+    records = read_log_file(rpm_fallback)
+
+    for record in records:
+
+        # Do not predict if the sensor data is incomplete.
+        if record["logged_state"] == "SENSOR_DROPOUT":
+            continue
+
+        sample = pd.DataFrame(
+            [{
+                "temperature": record["temperature"],
+                "pressure": record["pressure"],
+                "vibration": record["vibration"],
+                "rpm": record["rpm_used"],
+                "current": record["current"]
+            }],
+            columns=FEATURES
+        )
+
+        predictions = []
+
+        # Get a prediction from each model.
+        for name, model in models.items():
+            prediction = model.predict(sample)[0]
+
+            record[name] = prediction
+            predictions.append(prediction)
+
+        # Majority voting.
+        counts = pd.Series(predictions).value_counts()
+
+        if (
+            len(counts) > 1
+            and counts.iloc[0] == counts.iloc[1]
+        ):
+            majority_state = "DISAGREEMENT"
         else:
-            print("Unsafe condition detected. Check the machine.")
+            majority_state = counts.index[0]
 
+        record["ml_majority"] = majority_state
+
+        # Compare the logged state with the ML prediction.
+        if record["logged_state"] == "UNKNOWN":
+            record["comparison"] = "UNKNOWN_LOG_STATE"
+
+        elif majority_state == "DISAGREEMENT":
+            record["comparison"] = "MODEL_DISAGREEMENT"
+
+        elif record["logged_state"] == majority_state:
+            record["comparison"] = "MATCH"
+
+        else:
+            record["comparison"] = "DIFFERENT"
+
+    # Save all comparison records.
+    result = pd.DataFrame(records)
+
+    result.to_csv(OUTPUT_FILE, index=False)
+
+    print("\n========== LOG COMPARISON ==========")
+
+    print("Log entries processed:", len(result))
+
+    print("RPM used when missing:", rpm_fallback)
+
+    print("RPM was estimated because it is absent from the log.")
+
+    print("\n========== COMPARISON SUMMARY ==========")
+
+    print(
+        result["comparison"]
+        .value_counts()
+        .to_string()
+    )
+
+    columns = [
+        "log_line",
+        "logged_think",
+        "logged_state",
+        "rpm_used",
+        "rpm_assumed",
+        "Decision_Tree",
+        "Random_Forest",
+        "Naive_Bayes",
+        "ml_majority",
+        "comparison"
+    ]
+
+    print("\n========== DETAILED RESULTS ==========")
+
+    print(
+        result[columns].to_string(index=False)
+    )
+
+    print("\nComparison saved to:", OUTPUT_FILE)
+
+
+# --------------------------------------------------
+# 7. MAIN PROGRAM
+# --------------------------------------------------
 
 if __name__ == "__main__":
-    if not os.path.exists(CSV_FILE):
-        generate_csv()
-
     try:
-        dataset = load_dataset()
-        models = train_models(dataset)
-        predict_machine_state(models)
+        compare_predictions()
 
-    except (ValueError, KeyError, OSError, pd.errors.ParserError) as error:
+    except (
+        OSError,
+        ValueError,
+        KeyError,
+        TypeError,
+        pd.errors.ParserError
+    ) as error:
         print("Error:", error)

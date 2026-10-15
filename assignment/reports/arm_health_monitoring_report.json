@@ -1,0 +1,676 @@
+{
+  "fleet_size": 6,
+  "ml_model_accuracy": 0.9737,
+  "cross_val_accuracy": 0.9867,
+  "evaluations": [
+    {
+      "arm_id": "Arm_1",
+      "description": "Healthy arm with nominal telemetry and clean inspection log",
+      "decision": "SAFE",
+      "primary_trigger": "ALL_NOMINAL",
+      "recommended_action": "Continue normal assembly line operations.",
+      "full_evaluation": {
+        "arm_id": "Arm_1",
+        "final_decision": "SAFE",
+        "primary_trigger": "ALL_NOMINAL",
+        "reasons": [
+          "All joint sensors within normal operating limits",
+          "ML predicts healthy nominal state",
+          "No negative maintenance notes"
+        ],
+        "recommended_action": "Continue normal assembly line operations.",
+        "telemetry_summary": {
+          "shoulder": {
+            "torque_nm": 62.0,
+            "temperature_c": 44.0,
+            "vibration_mms": 11.2,
+            "motor_current_a": 12.4,
+            "speed_rpm": 28.0,
+            "operating_hours": 320
+          },
+          "elbow": {
+            "torque_nm": 42.0,
+            "temperature_c": 41.5,
+            "vibration_mms": 9.5,
+            "motor_current_a": 8.4,
+            "speed_rpm": 35.0,
+            "operating_hours": 320
+          },
+          "wrist": {
+            "torque_nm": 16.0,
+            "temperature_c": 37.0,
+            "vibration_mms": 7.0,
+            "motor_current_a": 3.5,
+            "speed_rpm": 55.0,
+            "operating_hours": 320
+          }
+        },
+        "safety_violations": [],
+        "sensor_warnings": [],
+        "spoof_defense": {
+          "is_spoofed": false,
+          "confidence": 0.0,
+          "spoofed_joints_count": 0,
+          "summary": "All joint sensor telemetry verified consistent with physical laws.",
+          "joint_evaluations": {
+            "shoulder": {
+              "joint": "shoulder",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 62.0
+            },
+            "elbow": {
+              "joint": "elbow",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 42.0
+            },
+            "wrist": {
+              "joint": "wrist",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 16.0
+            }
+          }
+        },
+        "ml_prediction": {
+          "arm_wear_state": "NORMAL",
+          "max_wear_risk_score": 0.0,
+          "worst_joint": null,
+          "joint_predictions": {
+            "shoulder": {
+              "wear_state": "NORMAL",
+              "wear_risk_score": 0.0,
+              "confidence": 1.0,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.0,
+                "CRITICAL_WEAR": 0.0,
+                "EARLY_WEAR": 0.0,
+                "NORMAL": 1.0
+              }
+            },
+            "elbow": {
+              "wear_state": "NORMAL",
+              "wear_risk_score": 0.0,
+              "confidence": 1.0,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.0,
+                "CRITICAL_WEAR": 0.0,
+                "EARLY_WEAR": 0.0,
+                "NORMAL": 1.0
+              }
+            },
+            "wrist": {
+              "wear_state": "NORMAL",
+              "wear_risk_score": 0.0,
+              "confidence": 1.0,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.0,
+                "CRITICAL_WEAR": 0.0,
+                "EARLY_WEAR": 0.0,
+                "NORMAL": 1.0
+              }
+            }
+          }
+        },
+        "log_analysis": {
+          "arm_id": "Arm_1",
+          "has_notes": true,
+          "log_risk_level": "HEALTHY",
+          "log_risk_score": 0.0,
+          "mentioned_joints": [],
+          "all_keywords": [
+            "secure",
+            "routine",
+            "smooth",
+            "wiped down"
+          ],
+          "relevant_entries_count": 1,
+          "summary": "Routine / clean inspection validated.",
+          "latest_entry": "Arm_1 routine visual check completed. Joint axes wiped down, all cables secure, running smooth with no audible chatter."
+        }
+      }
+    },
+    {
+      "arm_id": "Arm_8",
+      "description": "Arm showing mild grease seepage advisory in technician log (MONITOR candidate)",
+      "decision": "MONITOR",
+      "primary_trigger": "EARLY_WEAR_OR_ELEVATED_METRIC",
+      "recommended_action": "Increase telemetry sampling rate to 100 Hz, track thermal trend, and review at end-of-shift.",
+      "full_evaluation": {
+        "arm_id": "Arm_8",
+        "final_decision": "MONITOR",
+        "primary_trigger": "EARLY_WEAR_OR_ELEVATED_METRIC",
+        "reasons": [
+          "Maintenance note advisory: Warning indicators observed: seepage"
+        ],
+        "recommended_action": "Increase telemetry sampling rate to 100 Hz, track thermal trend, and review at end-of-shift.",
+        "telemetry_summary": {
+          "shoulder": {
+            "torque_nm": 68.0,
+            "temperature_c": 48.0,
+            "vibration_mms": 13.5,
+            "motor_current_a": 13.6,
+            "speed_rpm": 28.0,
+            "operating_hours": 950
+          },
+          "elbow": {
+            "torque_nm": 48.0,
+            "temperature_c": 46.0,
+            "vibration_mms": 11.0,
+            "motor_current_a": 9.6,
+            "speed_rpm": 32.0,
+            "operating_hours": 950
+          },
+          "wrist": {
+            "torque_nm": 17.5,
+            "temperature_c": 39.0,
+            "vibration_mms": 7.8,
+            "motor_current_a": 3.9,
+            "speed_rpm": 52.0,
+            "operating_hours": 950
+          }
+        },
+        "safety_violations": [],
+        "sensor_warnings": [],
+        "spoof_defense": {
+          "is_spoofed": false,
+          "confidence": 0.0,
+          "spoofed_joints_count": 0,
+          "summary": "All joint sensor telemetry verified consistent with physical laws.",
+          "joint_evaluations": {
+            "shoulder": {
+              "joint": "shoulder",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 68.0
+            },
+            "elbow": {
+              "joint": "elbow",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 48.0
+            },
+            "wrist": {
+              "joint": "wrist",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 17.5
+            }
+          }
+        },
+        "ml_prediction": {
+          "arm_wear_state": "NORMAL",
+          "max_wear_risk_score": 0.1435,
+          "worst_joint": "wrist",
+          "joint_predictions": {
+            "shoulder": {
+              "wear_state": "NORMAL",
+              "wear_risk_score": 0.14,
+              "confidence": 0.6,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.0,
+                "CRITICAL_WEAR": 0.0,
+                "EARLY_WEAR": 0.4,
+                "NORMAL": 0.6
+              }
+            },
+            "elbow": {
+              "wear_state": "NORMAL",
+              "wear_risk_score": 0.1417,
+              "confidence": 0.6,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.0025,
+                "CRITICAL_WEAR": 0.0013,
+                "EARLY_WEAR": 0.3962,
+                "NORMAL": 0.6
+              }
+            },
+            "wrist": {
+              "wear_state": "NORMAL",
+              "wear_risk_score": 0.1435,
+              "confidence": 0.6,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.01,
+                "CRITICAL_WEAR": 0.0,
+                "EARLY_WEAR": 0.39,
+                "NORMAL": 0.6
+              }
+            }
+          }
+        },
+        "log_analysis": {
+          "arm_id": "Arm_8",
+          "has_notes": true,
+          "log_risk_level": "ADVISORY",
+          "log_risk_score": 0.45,
+          "mentioned_joints": [
+            "elbow"
+          ],
+          "all_keywords": [
+            "seepage"
+          ],
+          "relevant_entries_count": 1,
+          "summary": "Warning indicators observed: seepage",
+          "latest_entry": "Inspection: Arm_8 elbow joint shows mild grease seepage around bearing seal, but zero excessive heat or play detected. Recommend monitoring seal during weekend PM."
+        }
+      }
+    },
+    {
+      "arm_id": "Arm_2",
+      "description": "Arm with accelerated mechanical wear and technician notes of rhythmic grinding & gritty grease",
+      "decision": "SCHEDULE_MAINTENANCE",
+      "primary_trigger": "MECHANICAL_DEGRADATION_OR_LOG_WARNING",
+      "recommended_action": "Schedule physical inspection, lubricate bearings, and replace degraded components during next maintenance window.",
+      "full_evaluation": {
+        "arm_id": "Arm_2",
+        "final_decision": "SCHEDULE_MAINTENANCE",
+        "primary_trigger": "MECHANICAL_DEGRADATION_OR_LOG_WARNING",
+        "reasons": [
+          "ML Model detected ACCELERATED_WEAR (risk: 0.63) on elbow",
+          "Technician log reported significant defect: Warning indicators observed: grinding, discolored, gritty, intermittent, noise",
+          "Coincident degradation: ML risk (0.63) + Log risk (0.90)",
+          "Multiple sensor warnings: ['ELBOW temperature_c elevated above warning threshold (66.0 > 62.0)', 'ELBOW vibration_mms elevated above warning threshold (27.5 > 22.0)', 'WRIST vibration_mms elevated above warning threshold (19.5 > 18.0)']"
+        ],
+        "recommended_action": "Schedule physical inspection, lubricate bearings, and replace degraded components during next maintenance window.",
+        "telemetry_summary": {
+          "shoulder": {
+            "torque_nm": 110.0,
+            "temperature_c": 64.0,
+            "vibration_mms": 26.0,
+            "motor_current_a": 22.0,
+            "speed_rpm": 24.0,
+            "operating_hours": 3800
+          },
+          "elbow": {
+            "torque_nm": 88.0,
+            "temperature_c": 66.0,
+            "vibration_mms": 27.5,
+            "motor_current_a": 17.5,
+            "speed_rpm": 28.0,
+            "operating_hours": 3800
+          },
+          "wrist": {
+            "torque_nm": 29.5,
+            "temperature_c": 55.0,
+            "vibration_mms": 19.5,
+            "motor_current_a": 6.5,
+            "speed_rpm": 45.0,
+            "operating_hours": 3800
+          }
+        },
+        "safety_violations": [],
+        "sensor_warnings": [
+          {
+            "joint": "elbow",
+            "metric": "temperature_c",
+            "value": 66.0,
+            "warn_threshold": 62.0,
+            "message": "ELBOW temperature_c elevated above warning threshold (66.0 > 62.0)"
+          },
+          {
+            "joint": "elbow",
+            "metric": "vibration_mms",
+            "value": 27.5,
+            "warn_threshold": 22.0,
+            "message": "ELBOW vibration_mms elevated above warning threshold (27.5 > 22.0)"
+          },
+          {
+            "joint": "wrist",
+            "metric": "vibration_mms",
+            "value": 19.5,
+            "warn_threshold": 18.0,
+            "message": "WRIST vibration_mms elevated above warning threshold (19.5 > 18.0)"
+          }
+        ],
+        "spoof_defense": {
+          "is_spoofed": false,
+          "confidence": 0.0,
+          "spoofed_joints_count": 0,
+          "summary": "All joint sensor telemetry verified consistent with physical laws.",
+          "joint_evaluations": {
+            "shoulder": {
+              "joint": "shoulder",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 110.0
+            },
+            "elbow": {
+              "joint": "elbow",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 88.0
+            },
+            "wrist": {
+              "joint": "wrist",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 29.5
+            }
+          }
+        },
+        "ml_prediction": {
+          "arm_wear_state": "ACCELERATED_WEAR",
+          "max_wear_risk_score": 0.633,
+          "worst_joint": "elbow",
+          "joint_predictions": {
+            "shoulder": {
+              "wear_state": "EARLY_WEAR",
+              "wear_risk_score": 0.5317,
+              "confidence": 0.4967,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.4683,
+                "CRITICAL_WEAR": 0.03,
+                "EARLY_WEAR": 0.4967,
+                "NORMAL": 0.005
+              }
+            },
+            "elbow": {
+              "wear_state": "ACCELERATED_WEAR",
+              "wear_risk_score": 0.633,
+              "confidence": 0.8069,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.8069,
+                "CRITICAL_WEAR": 0.0008,
+                "EARLY_WEAR": 0.1924,
+                "NORMAL": 0.0
+              }
+            },
+            "wrist": {
+              "wear_state": "ACCELERATED_WEAR",
+              "wear_risk_score": 0.4095,
+              "confidence": 0.3925,
+              "probabilities": {
+                "ACCELERATED_WEAR": 0.3925,
+                "CRITICAL_WEAR": 0.0013,
+                "EARLY_WEAR": 0.3812,
+                "NORMAL": 0.225
+              }
+            }
+          }
+        },
+        "log_analysis": {
+          "arm_id": "Arm_2",
+          "has_notes": true,
+          "log_risk_level": "CAUTION",
+          "log_risk_score": 0.9,
+          "mentioned_joints": [
+            "elbow"
+          ],
+          "all_keywords": [
+            "noise",
+            "discolored",
+            "gritty",
+            "intermittent",
+            "grinding"
+          ],
+          "relevant_entries_count": 1,
+          "summary": "Warning indicators observed: grinding, discolored, gritty, intermittent, noise",
+          "latest_entry": "Inspection: Noticed Arm_2 elbow joint emitting an intermittent rhythmic grinding noise during rapid pick-and-place cycles. Grease sample looked slightly discolored and gritty."
+        }
+      }
+    },
+    {
+      "arm_id": "Arm_4",
+      "description": "Arm with elbow joint crossing critical temperature cutoff (88.5\u00b0C > 80\u00b0C limit)",
+      "decision": "EMERGENCY_STOP",
+      "primary_trigger": "DETERMINISTIC_SAFETY_VIOLATION",
+      "recommended_action": "IMMEDIATE POWER CUT. Stop arm motion instantly to prevent physical destruction.",
+      "full_evaluation": {
+        "arm_id": "Arm_4",
+        "final_decision": "EMERGENCY_STOP",
+        "primary_trigger": "DETERMINISTIC_SAFETY_VIOLATION",
+        "reasons": [
+          "ELBOW temperature_c exceeded critical limit (88.5 > 80.0)"
+        ],
+        "recommended_action": "IMMEDIATE POWER CUT. Stop arm motion instantly to prevent physical destruction.",
+        "telemetry_summary": {
+          "shoulder": {
+            "torque_nm": 75.0,
+            "temperature_c": 52.0,
+            "vibration_mms": 14.0,
+            "motor_current_a": 15.0,
+            "speed_rpm": 28.0,
+            "operating_hours": 2100
+          },
+          "elbow": {
+            "torque_nm": 78.0,
+            "temperature_c": 88.5,
+            "vibration_mms": 25.0,
+            "motor_current_a": 15.6,
+            "speed_rpm": 30.0,
+            "operating_hours": 2100
+          },
+          "wrist": {
+            "torque_nm": 18.0,
+            "temperature_c": 42.0,
+            "vibration_mms": 8.0,
+            "motor_current_a": 4.0,
+            "speed_rpm": 55.0,
+            "operating_hours": 2100
+          }
+        },
+        "safety_violations": [
+          {
+            "joint": "elbow",
+            "metric": "temperature_c",
+            "value": 88.5,
+            "threshold": 80.0,
+            "severity": "CRITICAL",
+            "message": "ELBOW temperature_c exceeded critical limit (88.5 > 80.0)"
+          }
+        ],
+        "spoof_defense": null,
+        "ml_prediction": null,
+        "log_analysis": null
+      }
+    },
+    {
+      "arm_id": "Arm_5",
+      "description": "Arm under active spoofing attack: shoulder torque clamped to 18Nm while current is 29A and vib is 42mm/s",
+      "decision": "EMERGENCY_STOP",
+      "primary_trigger": "CRITICAL_SPOOFED_SENSOR_ATTACK",
+      "recommended_action": "EMERGENCY HALT & SECURITY AUDIT: Sensor telemetry has been maliciously falsified or dangerously compromised. Halt arm and recalibrate sensor hardware.",
+      "full_evaluation": {
+        "arm_id": "Arm_5",
+        "final_decision": "EMERGENCY_STOP",
+        "primary_trigger": "CRITICAL_SPOOFED_SENSOR_ATTACK",
+        "reasons": [
+          "SPOOFING ATTACK DETECTED on: shoulder. Evidence: Electromechanical Mismatch: Motor drawing 29.00A implies ~145.0Nm (Kt=5.0), but torque sensor reported only 18.0Nm (87.6% divergence). Severe spoofing suspected to conceal heavy joint load."
+        ],
+        "recommended_action": "EMERGENCY HALT & SECURITY AUDIT: Sensor telemetry has been maliciously falsified or dangerously compromised. Halt arm and recalibrate sensor hardware.",
+        "telemetry_summary": {
+          "shoulder": {
+            "torque_nm": 18.0,
+            "temperature_c": 79.0,
+            "vibration_mms": 42.0,
+            "motor_current_a": 29.0,
+            "speed_rpm": 25.0,
+            "operating_hours": 4200
+          },
+          "elbow": {
+            "torque_nm": 65.0,
+            "temperature_c": 56.0,
+            "vibration_mms": 16.0,
+            "motor_current_a": 13.0,
+            "speed_rpm": 32.0,
+            "operating_hours": 4200
+          },
+          "wrist": {
+            "torque_nm": 19.0,
+            "temperature_c": 44.0,
+            "vibration_mms": 9.0,
+            "motor_current_a": 4.2,
+            "speed_rpm": 50.0,
+            "operating_hours": 4200
+          }
+        },
+        "safety_violations": [],
+        "spoof_defense": {
+          "is_spoofed": true,
+          "confidence": 0.88,
+          "spoofed_joints_count": 1,
+          "summary": "SPOOFING ATTACK DETECTED on: shoulder. Evidence: Electromechanical Mismatch: Motor drawing 29.00A implies ~145.0Nm (Kt=5.0), but torque sensor reported only 18.0Nm (87.6% divergence). Severe spoofing suspected to conceal heavy joint load.",
+          "joint_evaluations": {
+            "shoulder": {
+              "joint": "shoulder",
+              "is_spoofed": true,
+              "spoof_type": "ELECTROMECHANICAL_CURRENT_MISMATCH",
+              "confidence": 0.88,
+              "evidence": "Electromechanical Mismatch: Motor drawing 29.00A implies ~145.0Nm (Kt=5.0), but torque sensor reported only 18.0Nm (87.6% divergence). Severe spoofing suspected to conceal heavy joint load.",
+              "estimated_actual_torque_nm": 145.0,
+              "reported_torque_nm": 18.0
+            },
+            "elbow": {
+              "joint": "elbow",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 65.0
+            },
+            "wrist": {
+              "joint": "wrist",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 19.0
+            }
+          }
+        },
+        "ml_prediction": null,
+        "log_analysis": null
+      }
+    },
+    {
+      "arm_id": "Arm_6",
+      "description": "Arm whose technician log flagged active smoke and screeching metallic binding",
+      "decision": "EMERGENCY_STOP",
+      "primary_trigger": "TECHNICIAN_LOG_EMERGENCY_DIRECTIVE",
+      "recommended_action": "EMERGENCY INSPECTION REQUIRED: Active hazard reported in technician log.",
+      "full_evaluation": {
+        "arm_id": "Arm_6",
+        "final_decision": "EMERGENCY_STOP",
+        "primary_trigger": "TECHNICIAN_LOG_EMERGENCY_DIRECTIVE",
+        "reasons": [
+          "Critical indicators observed: emergency, severe, shutdown, screeching, smoke, binding, immediate shutdown"
+        ],
+        "recommended_action": "EMERGENCY INSPECTION REQUIRED: Active hazard reported in technician log.",
+        "telemetry_summary": {
+          "shoulder": {
+            "torque_nm": 70.0,
+            "temperature_c": 50.0,
+            "vibration_mms": 15.0,
+            "motor_current_a": 14.0,
+            "speed_rpm": 26.0,
+            "operating_hours": 1900
+          },
+          "elbow": {
+            "torque_nm": 55.0,
+            "temperature_c": 52.0,
+            "vibration_mms": 14.0,
+            "motor_current_a": 11.0,
+            "speed_rpm": 30.0,
+            "operating_hours": 1900
+          },
+          "wrist": {
+            "torque_nm": 24.0,
+            "temperature_c": 48.0,
+            "vibration_mms": 16.0,
+            "motor_current_a": 5.3,
+            "speed_rpm": 48.0,
+            "operating_hours": 1900
+          }
+        },
+        "safety_violations": [],
+        "spoof_defense": {
+          "is_spoofed": false,
+          "confidence": 0.0,
+          "spoofed_joints_count": 0,
+          "summary": "All joint sensor telemetry verified consistent with physical laws.",
+          "joint_evaluations": {
+            "shoulder": {
+              "joint": "shoulder",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 70.0
+            },
+            "elbow": {
+              "joint": "elbow",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 55.0
+            },
+            "wrist": {
+              "joint": "wrist",
+              "is_spoofed": false,
+              "spoof_type": null,
+              "confidence": 0.0,
+              "evidence": "Telemetry passed physical plausibility cross-checks.",
+              "estimated_actual_torque_nm": null,
+              "reported_torque_nm": 24.0
+            }
+          }
+        },
+        "ml_prediction": null,
+        "log_analysis": {
+          "arm_id": "Arm_6",
+          "has_notes": true,
+          "log_risk_level": "CRITICAL",
+          "log_risk_score": 1.0,
+          "mentioned_joints": [
+            "wrist"
+          ],
+          "all_keywords": [
+            "severe",
+            "binding",
+            "shutdown",
+            "immediate shutdown",
+            "emergency",
+            "screeching",
+            "smoke"
+          ],
+          "relevant_entries_count": 1,
+          "summary": "Critical indicators observed: emergency, severe, shutdown, screeching, smoke, binding, immediate shutdown",
+          "latest_entry": "Emergency Inspection: Arm_6 wrist joint suffered sudden severe mechanical binding. Screeching metallic sound heard when rotating axis 5. Smoke smell reported by station tech. Immediate shutdown advised!"
+        }
+      }
+    }
+  ]
+}

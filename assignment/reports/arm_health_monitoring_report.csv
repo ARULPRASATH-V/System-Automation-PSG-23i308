@@ -1,0 +1,7 @@
+arm_id,decision,primary_trigger,recommended_action
+Arm_1,SAFE,ALL_NOMINAL,Continue normal assembly line operations.
+Arm_8,MONITOR,EARLY_WEAR_OR_ELEVATED_METRIC,"Increase telemetry sampling rate to 100 Hz, track thermal trend, and review at end-of-shift."
+Arm_2,SCHEDULE_MAINTENANCE,MECHANICAL_DEGRADATION_OR_LOG_WARNING,"Schedule physical inspection, lubricate bearings, and replace degraded components during next maintenance window."
+Arm_4,EMERGENCY_STOP,DETERMINISTIC_SAFETY_VIOLATION,IMMEDIATE POWER CUT. Stop arm motion instantly to prevent physical destruction.
+Arm_5,EMERGENCY_STOP,CRITICAL_SPOOFED_SENSOR_ATTACK,EMERGENCY HALT & SECURITY AUDIT: Sensor telemetry has been maliciously falsified or dangerously compromised. Halt arm and recalibrate sensor hardware.
+Arm_6,EMERGENCY_STOP,TECHNICIAN_LOG_EMERGENCY_DIRECTIVE,EMERGENCY INSPECTION REQUIRED: Active hazard reported in technician log.
